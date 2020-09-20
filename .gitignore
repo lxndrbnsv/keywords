@@ -1,0 +1,6 @@
+*.txt
+results/
+small_files/
+venv/
+*#
+*~
