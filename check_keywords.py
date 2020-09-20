@@ -297,7 +297,7 @@ def parser_1(file):
     with open(file_path) as text_file:
         for line in text_file:
             query = line.replace("\n", "").strip()
-            print(query)
+            print(query, flush=True)
             search_data = {"query": query, "results": []}
 
             links = get_search_results()
