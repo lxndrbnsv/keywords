@@ -4,3 +4,4 @@ small_files/
 venv/
 *#
 *~
+.idea/
