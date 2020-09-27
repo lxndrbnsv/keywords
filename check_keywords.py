@@ -82,9 +82,9 @@ def parser(file):
             for a in link.find("div", {"class": "sitelinks"}).find_all("a"):
                 s_links.append(a.attrs["href"])
         except AttributeError:
-            s_links = None
+            return None
         if len(s_links) == 0:
-            s_links = None
+            return None
         return s_links
 
     def get_site_links_text():
