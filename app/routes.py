@@ -4,6 +4,7 @@ from flask import request, send_file, jsonify
 
 from app import app, db
 from app.models import KeywordsDomain
+from app.scripts.parse_keywords import GetDomains
 
 
 @app.route("/")
@@ -14,7 +15,8 @@ def index():
 
 @app.route("/get_keywords_by_domain/<domain>")
 def get_keywords_by_domain(domain):
-    return jsonify(results=None)
+
+    return jsonify(GetDomains(domain=domain).results)
 
 
 @app.route("/send_file/<file_name>")
