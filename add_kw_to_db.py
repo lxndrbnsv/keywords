@@ -6,6 +6,11 @@ from app.models import KeywordsDomain
 
 
 json_files = []  # Список json-файлов с результатами поиска.
+existing = []  # Список уже проиндексированных файлов.
+
+
+for k in KeywordsDomain.query.all():
+    existing.append(k.kw_file_path)
 
 results_folders = os.listdir("./storage/fetched_data")
 
@@ -13,7 +18,8 @@ for folder in results_folders:
     results_files = os.listdir(f"./keywords_results/{folder}")
     for file in results_files:
         file_path = f"./keywords_results/{folder}/{file}"
-        json_files.append(file_path)
+        if file_path not in existing:
+            json_files.append(file_path)
 
 for idx, file in enumerate(json_files):
     print(idx)
