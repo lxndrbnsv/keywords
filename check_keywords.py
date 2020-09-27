@@ -291,7 +291,7 @@ def parser(file):
 
     # Проверяем, не обрабатывается ли данный файл.
     file_path = "./small_files/filtered/" + file
-    save_path = "./fetched_data/" + file.replace(".txt", "")
+    save_path = "./storage/fetched_data/" + file.replace(".txt", "")
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     with open(file_path) as text_file:
