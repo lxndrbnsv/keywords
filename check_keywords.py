@@ -363,6 +363,7 @@ if __name__ == "__main__":
         p2 = pool.apply_async(parser_1, args={files[1]})
         p3 = pool.apply_async(parser_1, args={files[2]})
         p4 = pool.apply_async(parser_1, args={files[3]})
+        p5 = pool.apply_async(parser_1, args={files[4]})
 
         p1.get()
         p2.get()
@@ -374,3 +375,4 @@ if __name__ == "__main__":
     os.system("rm ./small_files/filtered/" + files[1])
     os.system("rm ./small_files/filtered/" + files[2])
     os.system("rm ./small_files/filtered/" + files[3])
+    os.system("rm ./small_files/filtered/" + files[4])
