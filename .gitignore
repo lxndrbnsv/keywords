@@ -9,3 +9,4 @@ venv/
 storage/
 migrations/
 *.db
+__pycache__/
