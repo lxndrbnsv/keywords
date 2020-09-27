@@ -10,11 +10,11 @@ from bs4 import BeautifulSoup
 from requests.exceptions import ChunkedEncodingError
 
 
-city_id = "2"
+city_id = "213"
 files = os.listdir("./small_files/filtered")
 
 
-def parser_1(file):
+def parser(file):
     def get_search_results():
         """Возвращает список ссылок, собранных из выдачи поиска по
         Яндекс-директ, в виде html-кода."""
@@ -44,7 +44,7 @@ def parser_1(file):
         try:
             head = link.find("h2").get_text()
         except AttributeError:
-            head = "null"
+            head = None
 
         # Слэш в конце текста объявления означает, что второй заголовок
         # отсутствует. Поэтому первым делом происходит проверка на отутствие
@@ -71,9 +71,9 @@ def parser_1(file):
                 # Внутри split() используется тире (U+2013), а не дефис.
                 return link.find("h2").get_text().split("–", 1)[1].strip()
         except IndexError:
-            return "null"
+            return None
         except AttributeError:
-            return "null"
+            return None
 
     def get_site_links():
         """Быстрые ссылки. ОТОБРАЖАТЬ НЕ БУДЕМ."""
@@ -82,9 +82,9 @@ def parser_1(file):
             for a in link.find("div", {"class": "sitelinks"}).find_all("a"):
                 s_links.append(a.attrs["href"])
         except AttributeError:
-            s_links = "null"
+            s_links = None
         if len(s_links) == 0:
-            s_links = "null"
+            s_links = None
         return s_links
 
     def get_site_links_text():
@@ -93,9 +93,9 @@ def parser_1(file):
             for a in link.find("div", {"class": "sitelinks"}).find_all("a"):
                 sl_descriptions.append(a.get_text())
         except AttributeError:
-            sl_descriptions = "null"
+            sl_descriptions = None
         if len(sl_descriptions) == 0:
-            sl_descriptions = "null"
+            sl_descriptions = None
         return sl_descriptions
 
     def get_site_links_description():
@@ -107,7 +107,7 @@ def parser_1(file):
             pass
 
         if len(sl_desc) == 0:
-            sl_desc = "null"
+            sl_desc = None
 
         return sl_desc
 
@@ -152,7 +152,7 @@ def parser_1(file):
                 .next_sibling
             )
         except AttributeError:
-            return "null"
+            return None
 
     def get_link():
         """Ссылка из h2."""
@@ -214,9 +214,9 @@ def parser_1(file):
                     .strip()
                 )
             except IndexError:
-                return "null"
+                return None
         except IndexError:
-            return "null"
+            return None
 
     def get_phone():
         try:
@@ -226,10 +226,10 @@ def parser_1(file):
                 .strip()
             )
         except AttributeError:
-            return "null"
+            return None
 
     def get_work_hours():
-        w_hours = "null"
+        w_hours = None
         try:
             for div in link.find_all("div", {"class": "a11y-hidden"}):
                 if "работы" in div.parent.get_text():
@@ -239,17 +239,17 @@ def parser_1(file):
                         .strip()
                     )
         except AttributeError:
-            w_hours = "null"
+            w_hours = None
         return w_hours
 
     def get_address():
-        addr = "null"
+        addr = None
         try:
             for div in link.find_all("div", {"class": "a11y-hidden"}):
                 if "Адрес" in div.parent.get_text():
                     addr = div.parent.get_text().replace("Адрес", "").strip()
         except AttributeError:
-            addr = "null"
+            addr = None
         return addr
 
     def get_favicon():
@@ -263,7 +263,7 @@ def parser_1(file):
     def parse_site_links():
         """Преобразует быстрые ссылки, их текст и описания в один словарь"""
         sl_data = []
-        if site_links_description != "null":
+        if site_links_description is not None:
             for sl, slt, sld in zip(
                 site_links, site_links_text, site_links_description
             ):
@@ -275,7 +275,7 @@ def parser_1(file):
                     }
                 )
         else:
-            sld = "null"
+            sld = None
             for (
                 sl,
                 slt,
@@ -309,10 +309,10 @@ def parser_1(file):
                         site_links = get_site_links()
                         site_links_text = get_site_links_text()
                         site_links_description = get_site_links_description()
-                        if site_links != "null":
+                        if site_links is not None:
                             site_links_all = parse_site_links()
                         else:
-                            site_links_all = "null"
+                            site_links_all = None
                         website_link = get_website_link()
                         website_link_text = get_website_link_text()
                         product_link = get_product_link()
@@ -359,11 +359,11 @@ def parser_1(file):
 
 if __name__ == "__main__":
     with Pool(processes=4) as pool:
-        p1 = pool.apply_async(parser_1, args={files[0]})
-        p2 = pool.apply_async(parser_1, args={files[1]})
-        p3 = pool.apply_async(parser_1, args={files[2]})
-        p4 = pool.apply_async(parser_1, args={files[3]})
-        p5 = pool.apply_async(parser_1, args={files[4]})
+        p1 = pool.apply_async(parser, args={files[0]})
+        p2 = pool.apply_async(parser, args={files[1]})
+        p3 = pool.apply_async(parser, args={files[2]})
+        p4 = pool.apply_async(parser, args={files[3]})
+        p5 = pool.apply_async(parser, args={files[4]})
 
         p1.get()
         p2.get()
