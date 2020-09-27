@@ -15,9 +15,9 @@ for k in KeywordsDomain.query.all():
 results_folders = os.listdir("./storage/fetched_data")
 
 for folder in results_folders:
-    results_files = os.listdir(f"./storage/{folder}")
+    results_files = os.listdir(f"./storage/fetched_data/{folder}")
     for file in results_files:
-        file_path = f"./storage/{folder}/{file}"
+        file_path = f"./storage/fetched_data/{folder}/{file}"
         if file_path not in existing:
             json_files.append(file_path)
 
