@@ -15,7 +15,7 @@ for k in KeywordsDomain.query.all():
 results_folders = os.listdir("./storage/fetched_data")
 
 for folder in results_folders:
-    results_files = os.listdir(f"./keywords_results/{folder}")
+    results_files = os.listdir(f"./storage/{folder}")
     for file in results_files:
         file_path = f"./keywords_results/{folder}/{file}"
         if file_path not in existing:
