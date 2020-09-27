@@ -44,7 +44,7 @@ def parser(file):
         try:
             head = link.find("h2").get_text()
         except AttributeError:
-            head = None
+            head = "null"
 
         # Слэш в конце текста объявления означает, что второй заголовок
         # отсутствует. Поэтому первым делом происходит проверка на отутствие
@@ -71,9 +71,9 @@ def parser(file):
                 # Внутри split() используется тире (U+2013), а не дефис.
                 return link.find("h2").get_text().split("–", 1)[1].strip()
         except IndexError:
-            return None
+            return "null"
         except AttributeError:
-            return None
+            return "null"
 
     def get_site_links():
         """Быстрые ссылки. ОТОБРАЖАТЬ НЕ БУДЕМ."""
@@ -82,9 +82,9 @@ def parser(file):
             for a in link.find("div", {"class": "sitelinks"}).find_all("a"):
                 s_links.append(a.attrs["href"])
         except AttributeError:
-            return None
+            s_links = "null"
         if len(s_links) == 0:
-            return None
+            s_links = "null"
         return s_links
 
     def get_site_links_text():
@@ -93,9 +93,9 @@ def parser(file):
             for a in link.find("div", {"class": "sitelinks"}).find_all("a"):
                 sl_descriptions.append(a.get_text())
         except AttributeError:
-            sl_descriptions = None
+            sl_descriptions = "null"
         if len(sl_descriptions) == 0:
-            sl_descriptions = None
+            sl_descriptions = "null"
         return sl_descriptions
 
     def get_site_links_description():
@@ -107,7 +107,7 @@ def parser(file):
             pass
 
         if len(sl_desc) == 0:
-            sl_desc = None
+            sl_desc = "null"
 
         return sl_desc
 
@@ -152,7 +152,7 @@ def parser(file):
                 .next_sibling
             )
         except AttributeError:
-            return None
+            return "null"
 
     def get_link():
         """Ссылка из h2."""
@@ -214,9 +214,9 @@ def parser(file):
                     .strip()
                 )
             except IndexError:
-                return None
+                return "null"
         except IndexError:
-            return None
+            return "null"
 
     def get_phone():
         try:
@@ -226,10 +226,10 @@ def parser(file):
                 .strip()
             )
         except AttributeError:
-            return None
+            return "null"
 
     def get_work_hours():
-        w_hours = None
+        w_hours = "null"
         try:
             for div in link.find_all("div", {"class": "a11y-hidden"}):
                 if "работы" in div.parent.get_text():
@@ -239,17 +239,17 @@ def parser(file):
                         .strip()
                     )
         except AttributeError:
-            w_hours = None
+            w_hours = "null"
         return w_hours
 
     def get_address():
-        addr = None
+        addr = "null"
         try:
             for div in link.find_all("div", {"class": "a11y-hidden"}):
                 if "Адрес" in div.parent.get_text():
                     addr = div.parent.get_text().replace("Адрес", "").strip()
         except AttributeError:
-            addr = None
+            addr = "null"
         return addr
 
     def get_favicon():
@@ -263,7 +263,7 @@ def parser(file):
     def parse_site_links():
         """Преобразует быстрые ссылки, их текст и описания в один словарь"""
         sl_data = []
-        if site_links_description is not None:
+        if site_links_description != "null":
             for sl, slt, sld in zip(
                 site_links, site_links_text, site_links_description
             ):
@@ -275,7 +275,7 @@ def parser(file):
                     }
                 )
         else:
-            sld = None
+            sld = "null"
             for (
                 sl,
                 slt,
@@ -309,10 +309,10 @@ def parser(file):
                         site_links = get_site_links()
                         site_links_text = get_site_links_text()
                         site_links_description = get_site_links_description()
-                        if site_links is not None:
+                        if site_links != "null":
                             site_links_all = parse_site_links()
                         else:
-                            site_links_all = None
+                            site_links_all = "null"
                         website_link = get_website_link()
                         website_link_text = get_website_link_text()
                         product_link = get_product_link()
