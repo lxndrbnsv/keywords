@@ -9,6 +9,9 @@ import requests
 from bs4 import BeautifulSoup
 from requests.exceptions import ChunkedEncodingError
 
+from app import db
+from app.models import KeywordsDomain
+
 
 city_id = "213"
 files = os.listdir("./small_files/filtered")
@@ -343,6 +346,14 @@ def parser(file):
 
                         search_data["results"].append(data)
 
+                        # Записываем результат в БД.
+                        domain_db = KeywordsDomain()
+                        domain_db.kw_domain = website_link_text
+                        domain_db.kw_query = query
+                        domain_db.kw_file_path = save_path + "/" + query + ".json"
+                        db.session.add(domain_db)
+                        db.session.commit()
+
                     except AttributeError:
                         pass
 
@@ -352,6 +363,7 @@ def parser(file):
                         ) as json_file:
                             results_json = json.dumps(search_data)
                             json_file.write(results_json)
+                        
                     except FileNotFoundError:
                         pass
     return None

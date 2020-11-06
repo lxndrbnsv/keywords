@@ -15,7 +15,7 @@ def index():
 
 @app.route("/get_keywords_by_domain/<domain>")
 def get_keywords_by_domain(domain):
-
+    print(request, flush=True)
     return jsonify(GetDomains(domain=domain).results)
 
 
