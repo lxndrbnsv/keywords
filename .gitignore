@@ -10,3 +10,4 @@ storage/
 migrations/
 *.db
 __pycache__/
+mod.log*
