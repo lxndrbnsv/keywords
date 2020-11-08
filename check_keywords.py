@@ -1,6 +1,8 @@
 import os
 import json
 import idna
+import string
+import random
 from multiprocessing import Pool
 from idna import IDNAError
 from idna.core import InvalidCodepoint
@@ -294,14 +296,13 @@ def parser(file):
 
     # Проверяем, не обрабатывается ли данный файл.
     file_path = "./small_files/filtered/" + file
-    save_path = "./storage/fetched_data/" + file.replace(".txt", "")
+    save_path = "./storage/domain_data/"
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     with open(file_path) as text_file:
         for line in text_file:
             query = line.replace("\n", "").strip()
             print(query, flush=True)
-            search_data = {"query": query, "results": []}
 
             links = get_search_results()
             if links is not None:
@@ -343,29 +344,34 @@ def parser(file):
                             "address": address,
                             "favicon": favicon,
                         }
+                        search_data = {"query": query, "ad": data}
+                        # Записываем собранные данные в директорию, принадлежащую домену,
+                        # либо создаем для домена новую директорию.
+                        domain_dir_name = website_link_text.replace(".", "_")
+                        save_path = f"./storage/domain_data/{domain_dir_name}/"
+                        if not os.path.exists(save_path):
+                            os.makedirs(save_path)
 
-                        search_data["results"].append(data)
+                        charnum = 4
+                        letters = string.ascii_letters
+                        digits = string.digits
+                        file_name = "".join(random.choice(letters + digits) for __ in range(charnum))
 
-                        # Записываем результат в БД.
-                        domain_db = KeywordsDomain()
-                        domain_db.kw_domain = website_link_text
-                        domain_db.kw_query = query
-                        domain_db.kw_file_path = save_path + "/" + query + ".json"
-                        db.session.add(domain_db)
-                        db.session.commit()
+                        available_names = []
+                        for n in os.listdir(save_path):
+                            available_names.append(n.replace(".json", ""))
 
+                        while file_name in available_names:
+                            charnum = charnum + 1
+                            file_name = "".join(random.choice(letters + digits) for __ in range(charnum))
+
+                        result_data = json.dumps(search_data)
+                        with open(save_path + file_name + ".json", "w") as json_file:
+                            json_file.write(result_data)                            
+                        
                     except AttributeError:
                         pass
 
-                    try:
-                        with open(
-                            save_path + "/" + query + ".json", "w+"
-                        ) as json_file:
-                            results_json = json.dumps(search_data)
-                            json_file.write(results_json)
-                        
-                    except FileNotFoundError:
-                        pass
     return None
 
 
