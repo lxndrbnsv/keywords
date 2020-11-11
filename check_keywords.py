@@ -296,7 +296,7 @@ def parser(file):
 
     # Проверяем, не обрабатывается ли данный файл.
     file_path = "./small_files/filtered/" + file
-    save_path = "./storage/domain_data/"
+    save_path = "./storage/domain_data_01/"
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     with open(file_path) as text_file:
@@ -379,14 +379,24 @@ if __name__ == "__main__":
     with Pool(processes=4) as pool:
         p1 = pool.apply_async(parser, args={files[0]})
         p2 = pool.apply_async(parser, args={files[1]})
-        p3 = pool.apply_async(parser, args={files[2]})
-        p4 = pool.apply_async(parser, args={files[3]})
-        p5 = pool.apply_async(parser, args={files[4]})
+        #p3 = pool.apply_async(parser, args={files[2]})
+        #p4 = pool.apply_async(parser, args={files[3]})
+        #p6 = pool.apply_async(parser, args={files[5]})
+        #p7 = pool.apply_async(parser, args={files[6]})
+        #p8 = pool.apply_async(parser, args={files[7]})
+        #p9 = pool.apply_async(parser, args={files[8]})
+        #p10 = pool.apply_async(parser, args={files[9]})
 
         p1.get()
         p2.get()
         p3.get()
         p4.get()
+        p5.get()
+        p6.get()
+        p7.get()
+        p8.get()
+        p9.get()
+        p10.get()
 
     # Удаляем файлы, данные по которым уже были собраны.
     os.system("rm ./small_files/filtered/" + files[0])
@@ -394,3 +404,8 @@ if __name__ == "__main__":
     os.system("rm ./small_files/filtered/" + files[2])
     os.system("rm ./small_files/filtered/" + files[3])
     os.system("rm ./small_files/filtered/" + files[4])
+    os.system("rm ./small_files/filtered/" + files[5])
+    os.system("rm ./small_files/filtered/" + files[6])
+    os.system("rm ./small_files/filtered/" + files[7])
+    os.system("rm ./small_files/filtered/" + files[8])
+    os.system("rm ./small_files/filtered/" + files[9])
