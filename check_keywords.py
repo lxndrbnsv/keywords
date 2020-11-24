@@ -9,7 +9,7 @@ from idna.core import InvalidCodepoint
 
 import requests
 from bs4 import BeautifulSoup
-from requests.exceptions import ChunkedEncodingError
+from requests.exceptions import ChunkedEncodingError, ConnectionError
 
 from app import db
 from app.models import KeywordsDomain
@@ -17,6 +17,12 @@ from app.models import KeywordsDomain
 
 city_id = "213"
 files = os.listdir("./small_files/filtered")
+#with open("./query_list.txt", "r") as text_file:
+#    text_data = text_file.readlines()
+
+# request_data = []
+# for i in text_data:
+#    request_data.append(i.replace("\n", ""))
 
 
 def parser(file):
@@ -24,6 +30,10 @@ def parser(file):
         """Возвращает список ссылок, собранных из выдачи поиска по
         Яндекс-директ, в виде html-кода."""
         try:
+            
+            #if query in request_data:
+            #    return None
+            
             direct_results_html = []
 
             # Выполняем поиск по объявлениям.
@@ -43,6 +53,8 @@ def parser(file):
 
             return direct_results_html
         except ChunkedEncodingError:
+            return None
+        except ConnectionError:
             return None
 
     def get_header():
@@ -296,7 +308,7 @@ def parser(file):
 
     # Проверяем, не обрабатывается ли данный файл.
     file_path = "./small_files/filtered/" + file
-    save_path = "./storage/domain_data_01/"
+    save_path = "domain_data"
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     with open(file_path) as text_file:
@@ -348,7 +360,7 @@ def parser(file):
                         # Записываем собранные данные в директорию, принадлежащую домену,
                         # либо создаем для домена новую директорию.
                         domain_dir_name = website_link_text.replace(".", "_")
-                        save_path = f"./storage/domain_data/{domain_dir_name}/"
+                        save_path = f"domain_data/{domain_dir_name}/"
                         if not os.path.exists(save_path):
                             os.makedirs(save_path)
 
@@ -376,11 +388,12 @@ def parser(file):
 
 
 if __name__ == "__main__":
-    with Pool(processes=4) as pool:
+    with Pool(processes=1) as pool:
         p1 = pool.apply_async(parser, args={files[0]})
-        p2 = pool.apply_async(parser, args={files[1]})
+        #p2 = pool.apply_async(parser, args={files[1]})
         #p3 = pool.apply_async(parser, args={files[2]})
         #p4 = pool.apply_async(parser, args={files[3]})
+        #p5 = pool.apply_async(parser, args={files[4]})        
         #p6 = pool.apply_async(parser, args={files[5]})
         #p7 = pool.apply_async(parser, args={files[6]})
         #p8 = pool.apply_async(parser, args={files[7]})
@@ -388,24 +401,24 @@ if __name__ == "__main__":
         #p10 = pool.apply_async(parser, args={files[9]})
 
         p1.get()
-        p2.get()
-        p3.get()
-        p4.get()
-        p5.get()
-        p6.get()
-        p7.get()
-        p8.get()
-        p9.get()
-        p10.get()
+        #p2.get()
+        #p3.get()
+        #p4.get()
+        #p5.get()
+        #p6.get()
+        #p7.get()
+        #p8.get()
+        #p9.get()
+        #p10.get()
 
     # Удаляем файлы, данные по которым уже были собраны.
     os.system("rm ./small_files/filtered/" + files[0])
-    os.system("rm ./small_files/filtered/" + files[1])
-    os.system("rm ./small_files/filtered/" + files[2])
-    os.system("rm ./small_files/filtered/" + files[3])
-    os.system("rm ./small_files/filtered/" + files[4])
-    os.system("rm ./small_files/filtered/" + files[5])
-    os.system("rm ./small_files/filtered/" + files[6])
-    os.system("rm ./small_files/filtered/" + files[7])
-    os.system("rm ./small_files/filtered/" + files[8])
-    os.system("rm ./small_files/filtered/" + files[9])
+    #os.system("rm ./small_files/filtered/" + files[1])
+    #os.system("rm ./small_files/filtered/" + files[2])
+    #os.system("rm ./small_files/filtered/" + files[3])
+    #os.system("rm ./small_files/filtered/" + files[4])
+    #os.system("rm ./small_files/filtered/" + files[5])
+    #os.system("rm ./small_files/filtered/" + files[6])
+    #os.system("rm ./small_files/filtered/" + files[7])
+    #os.system("rm ./small_files/filtered/" + files[8])
+    #os.system("rm ./small_files/filtered/" + files[9])
